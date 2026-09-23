@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Vivant Watches - Tax Invoice</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+
+</head>
+
+<body>
+
+<script src="../js/auth.js"></script>
+<script>requireAuth();</script>
+
+<div class="container">
+
+<div class="editor">
+
+<div class="userBar">
+<span>Logged in as <strong id="userLabel"></strong></span>
+<button onclick="logout()">Log Out</button>
+</div>
+
+<h3>Invoice Editor</h3>
+
+<label>Invoice No</label>
+<input type="number" id="invNo" oninput="updateInvoice()">
+
+<label>Date</label>
+<input type="date" id="invDate" oninput="updateInvoice()">
+
+<hr>
+
+<h4>Customer</h4>
+
+<input type="text" id="custName" placeholder="Customer Name *" oninput="updateInvoice()">
+<input type="text" id="custAddress" placeholder="Address" oninput="updateInvoice()">
+<input type="tel" id="custPhone" placeholder="Phone" inputmode="tel" oninput="sanitizePhone(this); updateInvoice()">
+<input type="text" id="custTRN" placeholder="TRN" oninput="updateInvoice()">
+
+<hr>
+
+<h4>Items</h4>
+
+<div id="itemList">
+
+<div class="itemRow">
+<textarea class="desc" placeholder="Description" oninput="updateInvoice()"></textarea>
+<input type="number" class="qty" value="1" oninput="updateInvoice()">
+<input type="number" class="price" placeholder="Unit Price Incl VAT" oninput="updateInvoice()">
+<button onclick="removeItem(this)">Remove</button>
+</div>
+
+</div>
+
+<button onclick="addItem()">+ Add Item</button>
+
+<hr>
+
+<h4>Payment</h4>
+
+<div id="paymentList">
+
+<div class="paymentRow">
+
+<select class="payMode" onchange="updateInvoice()">
+<option>CASH</option>
+<option>CARD</option>
+<option>BANK TRANSFER</option>
+<option>CHEQUE</option>
+</select>
+
+<input type="text" class="payRef" placeholder="Reference" oninput="updateInvoice()">
+
+<input type="number" class="payAmount" placeholder="Amount" oninput="updateInvoice()">
+
+<button onclick="removePayment(this)">Remove</button>
+
+</div>
+
+</div>
+
+<button onclick="addPayment()">+ Another Payment Method</button>
+
+<br><br>
+
+<button onclick="printInvoice()">Print Invoice</button>
+
+</div>
+
+<div class="preview" id="invoicePreview">
+
+<div class="logoLeft">
+<img id="logoImg" alt="Company Logo" style="display:none;">
+<div class="logoFallback" id="logoFallback" style="display:none;font-size:22px;font-weight:700;color:#d0a933;">VIVANT WATCHES</div>
+</div>
+
+<table style="border:none;margin-bottom:20px">
+
+<tr>
+
+<td style="border:none;text-align:left">
+
+<span id="companyAddress" style="white-space:pre-line;"></span><br>
+Phone: <span id="companyPhone"></span><br>
+Email: <span id="companyEmail"></span>
+
+</td>
+
+<td style="border:none;text-align:right">
+
+<div class="taxTitle">فاتورة ضريبية</div>
+<div class="taxTitle">TAX INVOICE</div>
+
+<div>TRN: <span id="companyTRN"></span></div>
+
+</td>
+
+</tr>
+
+</table>
+
+<table style="border:none;margin-bottom:15px">
+
+<tr>
+
+<td style="border:none;text-align:left">
+Invoice No : <span id="pInvNo"></span><br>
+Invoice Date : <span id="pDate"></span>
+</td>
+
+<td style="border:none;text-align:right">
+رقم الفاتورة<br>
+التاريخ
+</td>
+
+</tr>
+
+</table>
+
+<table style="border:none;margin-bottom:20px">
+
+<tr>
+
+<td style="border:none;text-align:left;width:65%">
+
+<strong>BILL TO</strong><br><br>
+
+Name : <span id="pName"></span><br>
+Address : <span id="pAddress"></span><br>
+Phone : <span id="pPhone"></span><br>
+TRN : <span id="pTRN"></span>
+
+</td>
+
+<td style="border:none;text-align:right">
+
+<strong>فاتورة إلى</strong><br><br>
+
+الاسم<br>
+العنوان<br>
+الهاتف<br>
+الرقم الضريبي
+
+</td>
+
+</tr>
+
+</table>
+
+<table style="border-bottom:2px solid black">
+
+<thead>
+
+<tr style="border-bottom:2px solid black">
+
+<th>#<br>الرقم</th>
+<th>Description<br>الوصف</th>
+<th>Qty<br>الكمية</th>
+<th>Unit Price Incl VAT<br>سعر الوحدة شامل الضريبة</th>
+<th>Unit Price Excl VAT<br>سعر الوحدة بدون الضريبة</th>
+<th>Total Excl VAT<br>الإجمالي بدون الضريبة</th>
+<th>VAT %<br>نسبة الضريبة</th>
+<th>VAT Amount<br>قيمة الضريبة</th>
+<th>Total Incl VAT<br>الإجمالي شامل الضريبة</th>
+
+</tr>
+
+</thead>
+
+<tbody id="invoiceItems"></tbody>
+
+</table>
+
+<table style="margin-top:20px">
+
+<tr>
+
+<td style="border:none;text-align:left">
+
+<strong>Amount in Words :</strong><br>
+<strong>المبلغ بالكلمات :</strong><br>
+<span id="pWords"></span>
+
+</td>
+
+<td style="border:none;text-align:right">
+
+<strong>Total Amount Incl. VAT</strong><br>
+<strong>إجمالي المبلغ شامل الضريبة</strong><br>
+<strong>AED <span id="grandTotal"></span></strong>
+
+</td>
+
+</tr>
+
+</table>
+
+<table style="margin-top:6px">
+
+<tr>
+
+<td style="border:none;text-align:right">
+
+<strong>Balance Due</strong><br>
+<strong>الرصيد المستحق</strong><br>
+<strong>AED <span id="balanceDue"></span></strong>
+
+</td>
+
+</tr>
+
+</table>
+
+<table style="margin-top:20px">
+
+<tr>
+<th>Mode<br>طريقة الدفع</th>
+<th>Reference<br>المرجع</th>
+<th>Currency<br>العملة</th>
+<th>Taxable<br>القيمة الخاضعة</th>
+<th>VAT<br>الضريبة</th>
+<th>Total<br>الإجمالي</th>
+</tr>
+
+<tbody id="paymentRows"></tbody>
+
+</table>
+
+<div style="text-align:right;margin-top:30px;">
+<img id="stampImg" class="stamp" alt="Company Stamp" style="display:none;">
+</div>
+
+<div style="text-align:center;margin-top:20px;font-size:13px;font-weight:600;">
+THIS IS A COMPUTER GENERATED INVOICE AND NO SIGNATURE IS REQUIRED
+</div>
+
+<div style="text-align:center;font-size:13px;">
+هذه فاتورة صادرة آلياً ولا تتطلب توقيع
+</div>
+
+</div>
+
+</div>
+
+<script src="../js/script.js"> </script>
+<script>
+document.getElementById("userLabel").textContent = currentUser();
+
+const branding = currentUserBranding();
+
+if(branding && branding.logo){
+	const logoImg = document.getElementById("logoImg");
+	logoImg.src = branding.logo;
+	logoImg.style.display = "block";
+} else {
+	document.getElementById("logoFallback").style.display = "block";
+}
+
+if(branding && branding.stamp){
+	const stampImg = document.getElementById("stampImg");
+	stampImg.src = branding.stamp;
+	stampImg.style.display = "block";
+}
+
+document.getElementById("companyTRN").textContent = (branding && branding.trn) ? branding.trn : "-";
+document.getElementById("companyAddress").textContent = (branding && branding.address) ? branding.address : "";
+document.getElementById("companyPhone").textContent = (branding && branding.phone) ? branding.phone : "";
+document.getElementById("companyEmail").textContent = (branding && branding.email) ? branding.email : "";
+
+</script>
+
+</body>
+</html>
