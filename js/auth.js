@@ -1,10 +1,3 @@
-// ---- Vivant Watches: simple client-side auth ----
-// NOTE: Accounts are stored in this browser's localStorage only. This is
-// basic access-gating for a single shared device, NOT secure multi-user
-// authentication - anyone with access to this browser profile can read
-// localStorage. For real multi-user security you'd need a server-side
-// login system.
-
 async function hashPassword(password){
 	const enc = new TextEncoder().encode(password);
 	const buf = await crypto.subtle.digest("SHA-256", enc);
@@ -23,7 +16,6 @@ function currentUser(){
 	return localStorage.getItem("vivantSession");
 }
 
-// The logo/stamp/TRN/contact details belonging to the currently logged-in user (or null).
 function currentUserBranding(){
 	const username = currentUser();
 	if(!username) return null;
@@ -49,7 +41,6 @@ function fileToDataURL(file){
 	});
 }
 
-// Call at the top of any page that should be protected.
 function requireAuth(){
 	if(!currentUser()){
 		window.location.href = "login.html";
@@ -79,7 +70,7 @@ async function handleRegister(event){
 	const email = regEmail.value.trim();
 	const logoFile = regLogo.files[0];
 	const stampFile = regStamp.files[0];
-	const MAX_SIZE = 2 * 1024 * 1024; // 2MB per image
+	const MAX_SIZE = 2 * 1024 * 1024; 
 
 	if(!username || !password){
 		showAuthMsg("Please fill in all fields.", true);
