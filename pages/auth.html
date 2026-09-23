@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>ATI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+
+</head>
+
+<body>
+
+<div class="authWrapper" data-mode="login">
+
+	<div class="brandPanel">
+		<div class="blob blob1"></div>
+		<div class="blob blob2"></div>
+		<div class="blob blob3"></div>
+
+		<div class="brandContent">
+			<h1>ATI</h1>
+			<div class="brandTexts">
+				<p class="brandText brandLoginText">Sign in to your invoice tool to access your saved branding, stamp, and company details.</p>
+				<p class="brandText brandRegisterText">Create your account once, then every invoice you print will carry your own logo, stamp, and company details automatically.</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="formPanel">
+		<div class="slides">
+
+			<div class="slide" id="loginSlide">
+				<div class="authCard">
+
+					<h2 class="authTitle" id="loginTitle">Welcome back</h2>
+					<p class="authSubtitle" id="loginSubtitle">Log in to continue to your invoices</p>
+
+					<form onsubmit="handleLogin(event)">
+
+						<div class="fieldGroup">
+							<input type="text" id="loginUsername" placeholder=" " required autocomplete="username">
+							<label for="loginUsername">Username</label>
+						</div>
+
+						<div class="fieldGroup passwordGroup">
+							<input type="password" id="loginPassword" placeholder=" " required autocomplete="current-password">
+							<label for="loginPassword">Password</label>
+							<button type="button" class="pwToggle" aria-label="Show password" onclick="togglePassword('loginPassword', this)"><svg class="pwIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+						</div>
+
+						<div id="loginMsg" class="authMsg"></div>
+
+						<button type="submit" class="authSubmit">Log In</button>
+
+					</form>
+
+					<p class="authLink">No account yet? <a href="#register">Register</a></p>
+
+				</div>
+			</div>
+
+			<div class="slide" id="registerSlide" inert aria-hidden="true">
+				<div class="authCard authCard--wide">
+
+					<h2 class="authTitle">Create your account</h2>
+					<p class="authSubtitle">A few details, then you're ready to invoice</p>
+
+					<form onsubmit="handleRegister(event)">
+
+						<div class="fieldGroup">
+							<input type="text" id="regUsername" placeholder=" " required autocomplete="username">
+							<label for="regUsername">Username</label>
+						</div>
+
+						<div class="fieldRow">
+							<div class="fieldGroup passwordGroup">
+								<input type="password" id="regPassword" placeholder=" " required autocomplete="new-password">
+								<label for="regPassword">Password</label>
+								<button type="button" class="pwToggle" aria-label="Show password" onclick="togglePassword('regPassword', this)"><svg class="pwIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+							</div>
+
+							<div class="fieldGroup passwordGroup">
+								<input type="password" id="regConfirm" placeholder=" " required autocomplete="new-password">
+								<label for="regConfirm">Confirm Password</label>
+								<button type="button" class="pwToggle" aria-label="Show password" onclick="togglePassword('regConfirm', this)"><svg class="pwIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+							</div>
+						</div>
+
+						<div class="fieldRow">
+							<div class="fieldGroup">
+								<input type="text" id="regTRN" placeholder=" " inputmode="numeric" maxlength="15" required oninput="this.value=this.value.replace(/\D/g,'')">
+								<label for="regTRN">Company TRN (15 digits)</label>
+							</div>
+
+							<div class="fieldGroup">
+								<input type="tel" id="regPhone" placeholder=" " inputmode="tel" required oninput="this.value=this.value.replace(/[^0-9+\-\s()]/g,'')">
+								<label for="regPhone">Company Phone</label>
+							</div>
+						</div>
+
+						<div class="fieldGroup">
+							<textarea id="regAddress" placeholder=" " rows="2" required></textarea>
+							<label for="regAddress">Company Address</label>
+						</div>
+
+						<div class="fieldGroup">
+							<input type="email" id="regEmail" placeholder=" " required autocomplete="email">
+							<label for="regEmail">Company Email</label>
+						</div>
+
+						<div class="fieldRow">
+							<div class="fieldGroup fileField">
+								<label class="fileLabel" for="regLogo">
+									<svg class="fileIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+									<span>Upload Logo</span>
+								</label>
+								<input type="file" id="regLogo" accept="image/*" required class="srOnly" onchange="previewImage(this, 'logoPreview')">
+								<img id="logoPreview" class="uploadPreview" alt="Logo preview" style="display:none;">
+							</div>
+
+							<div class="fieldGroup fileField">
+								<label class="fileLabel" for="regStamp">
+									<svg class="fileIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+									<span>Upload Stamp</span>
+								</label>
+								<input type="file" id="regStamp" accept="image/*" required class="srOnly" onchange="previewImage(this, 'stampPreview')">
+								<img id="stampPreview" class="uploadPreview" alt="Stamp preview" style="display:none;">
+							</div>
+						</div>
+
+						<div id="regMsg" class="authMsg"></div>
+
+						<button type="submit" class="authSubmit">Create Account</button>
+
+					</form>
+
+					<p class="authLink">Already have an account? <a href="#login">Log In</a></p>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+</div>
+
+<script src="../js/auth.js"></script>
+<script>initAuthPage();</script>
+
+</body>
+</html>
