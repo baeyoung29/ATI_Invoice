@@ -1,7 +1,6 @@
 let lastInvoice = parseInt(localStorage.getItem("vivantInvoice")) || 1;
 document.getElementById("invNo").value = lastInvoice;
 
-// Default the date field to today so it's never left blank
 if(!invDate.value){
 	invDate.value = new Date().toISOString().split("T")[0];
 }
@@ -10,7 +9,6 @@ function formatMoney(n){
 	return (n || 0).toLocaleString("en-AE", {minimumFractionDigits:2, maximumFractionDigits:2});
 }
 
-// Strips anything that isn't a digit, space, +, -, or () so letters can't be typed into a phone field
 function sanitizePhone(input){
 	const cleaned = input.value.replace(/[^0-9+\-\s()]/g, "");
 	if(cleaned !== input.value){
